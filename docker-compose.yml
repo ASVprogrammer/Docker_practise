@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .  # Use the current directory for the Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"  # Expose Flask app on port 5000
+    environment:
+      - SQLALCHEMY_DATABASE_URI=postgresql://postgres:root@db:5432/todolist
+    depends_on:
+      - db
+    volumes:
+      - .:/app  # Mount local files for development
+
+  db:
+    image: postgres:15  # Use PostgreSQL version 15
+    container_name: postgres_db
+    ports:
+      - "5432:5432"  # Expose PostgreSQL on port 5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: todolist
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
